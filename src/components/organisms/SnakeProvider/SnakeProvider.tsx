@@ -4,17 +4,17 @@ import { ISnakeProperties } from "../../../utils/Snake/types";
 import { DEFAULT_PROPERTIES } from "../../../utils/Snake/constants";
 
 interface props {
-	children: any;
+	children: React.ReactNode;
 }
 const SnakeProvider: React.FC<props> = ({ children }) => {
 	const [properties, setProperties] =
 		useState<ISnakeProperties>(DEFAULT_PROPERTIES);
 
 	const changeProperty = (a: Partial<ISnakeProperties>) => {
-		setProperties({ ...properties, ...a });
+		setProperties((prev) => ({ ...prev, ...a }));
 	};
 	return (
-		<SnakeContext.Provider value={{ properties: properties, changeProperty }}>
+		<SnakeContext.Provider value={{ properties, changeProperty }}>
 			{children}
 		</SnakeContext.Provider>
 	);

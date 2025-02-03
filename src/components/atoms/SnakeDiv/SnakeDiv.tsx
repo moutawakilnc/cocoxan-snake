@@ -5,6 +5,7 @@ interface props {
 	size: number;
 	x: number;
 	y: number;
+	context: Canva;
 }
 
 const SnakeDiv: React.FC<props> = ({ color, size }) => {
