@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target": "es5", // ou "es6" si tu préfères
+		"module": "esnext",
+		"moduleResolution": "node",
+		"outDir": "./dist", // Le dossier où le JS compilé sera généré
+		"strict": true,
+		"jsx": "react-jsx",
+		"esModuleInterop": true
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
+}

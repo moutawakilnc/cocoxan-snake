@@ -1,0 +1,17 @@
+# Ne pas envoyer les dépendances
+node_modules/
+
+# Ne pas envoyer les fichiers de build
+dist/
+build/
+
+# Ne pas envoyer les fichiers d’environnement sensibles
+.env
+.env.local
+.env.production
+.env.development
+
+# Dossiers spécifiques à certains IDE/OS
+.vscode/
+.DS_Store  # MacOS
+Thumbs.db  # Windows
