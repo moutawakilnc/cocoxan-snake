@@ -1,4 +1,4 @@
-import { useThemeContext } from "../../../utils/GameBoard/hooks/context";
+import { useThemeContext } from "../../../utils/Theme/hooks/context";
 import Button from "../../atoms/Button/Button";
 
 const MenuTheme = () => {

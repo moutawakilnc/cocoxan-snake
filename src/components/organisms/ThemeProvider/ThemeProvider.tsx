@@ -1,10 +1,8 @@
 import { useState } from "react";
-import {
-	ThemeContext,
-	useThemeContext,
-} from "../../../utils/GameBoard/hooks/context";
-import { themePicker } from "../../../utils/GameBoard/constants";
-import { ThemeName } from "../../../utils/GameBoard/types";
+
+import { ThemeContext } from "../../../utils/Theme/hooks/context";
+import { ThemeName } from "../../../utils/Theme/types";
+import { themePicker } from "../../../utils/Theme/constants";
 
 export const ThemeProvider: React.FC<{
 	children: React.ReactNode;
