@@ -1,0 +1,62 @@
+import { StackNavigationProp } from "@react-navigation/stack";
+import { ReactNode } from "react";
+
+export type ButtonType = "native" | "flex";
+
+export type NavigationType = {
+  Home: undefined;
+  Game: any;
+  //Profile: { userId: number };  Si tu veux passer des paramètres
+};
+
+export type NavigationHome = StackNavigationProp<NavigationType, "Home">;
+export type NavigationGame = StackNavigationProp<NavigationType, "Game">;
+
+export type VectorTwoDimension<T> = { x: T; z: T };
+export type Distance = { start: number; end: number };
+export type MapBorders = VectorTwoDimension<Distance>;
+
+export type Position = {
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type ObjPosition = Position & { ref?: any };
+//[]
+export type ElementPositions = ObjPosition[];
+export type ElementInSpace<T = unknown> = T extends []
+  ? ObjPosition[]
+  : ObjPosition;
+
+export interface Snake {
+  name: String;
+  positions: ElementInSpace<[]>;
+}
+
+export interface IApple {
+  name: String;
+  position: ElementInSpace;
+}
+
+export enum GameDifficulty {
+  EASY = "easy",
+  MEDIUM = "medium",
+  HARD = "hard",
+}
+export interface GameContextState {
+  gameScore: number;
+  setGameScore?: React.Dispatch<React.SetStateAction<number>>;
+  gameStatus: GameStatus;
+  setGameStatus: React.Dispatch<React.SetStateAction<GameStatus>>;
+  gameDifficulty: GameDifficulty;
+  setGameDifficulty?: React.Dispatch<React.SetStateAction<GameDifficulty>>;
+  appleEaten: number;
+  setAppleEaten: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export type GameStatus = "READY" | "PLAY" | "LOST";
+
+export interface GameProviderProps {
+  children?: ReactNode;
+}
