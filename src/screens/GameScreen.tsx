@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { View } from "react-native";
 import { GLView } from "expo-gl";
-import { Renderer } from "expo-three";
+import { Renderer, THREE } from "expo-three";
 import { PerspectiveCamera, Scene } from "three";
 import SnakeFragment from "../components/SnakeFragment/SnakeFragment";
 import Apple from "../components/Apple/Apple";
-import { IApple, Snake } from "../utils/types/common";
+import { IApple, Position, Snake } from "../utils/types/common";
+import { MAP_BORDERS } from "../utils/constants/Game";
+import useCollision from "../utils/hooks/useCollision";
 
 const SnakeGame = () => {
   const glRef = useRef(null);
@@ -13,8 +15,8 @@ const SnakeGame = () => {
     name: "player",
     positions: [
       { x: 0, y: 0, z: 0 },
-      { x: -0.5, y: 0, z: 0 },
-      { x: -1, y: 0, z: 0 },
+      { x: -2, y: 0, z: 0 },
+      { x: -4, y: 0, z: 0 },
     ],
   });
 
@@ -27,35 +29,24 @@ const SnakeGame = () => {
   const rotation = useRef(0);
   const directionRef = useRef({ x: 1, y: 0, z: 0 });
 
-  const handleKeyPress = useCallback((event: any) => {
-    let newRotation = rotation.current;
-
-    setDirection((prev) => {
-      if (event.key === "ArrowUp") {
-        rotation.current = Math.PI / 2;
-        return { x: 0, y: -1, z: 0 };
-      } else if (event.key === "ArrowDown") {
-        rotation.current = -Math.PI / 2;
-        return { x: 0, y: 1, z: 0 };
-      }
-      if (event.key === "ArrowLeft") {
-        rotation.current = Math.PI;
-        return { x: -1, y: 0, z: 0 };
-      }
-      if (event.key === "ArrowRight") {
-        rotation.current = -Math.PI;
-        return { x: 1, y: 0, z: 0 };
-      }
-      return prev;
-    });
-
-    rotation.current = newRotation;
-  }, []);
-
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyPress, { once: true });
+    const handleKeyPress = (event: KeyboardEvent) => {
+      setDirection((prev) => {
+        if (event.key === "ArrowUp" && prev.y === 0)
+          return { x: 0, y: 1, z: 0 };
+        if (event.key === "ArrowDown" && prev.y === 0)
+          return { x: 0, y: -1, z: 0 };
+        if (event.key === "ArrowLeft" && prev.x === 0)
+          return { x: -1, y: 0, z: 0 };
+        if (event.key === "ArrowRight" && prev.x === 0)
+          return { x: 1, y: 0, z: 0 };
+        return prev; // Ignore si mouvement invalide
+      });
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [handleKeyPress]);
+  }, []);
 
   //update 3d mesh
   useEffect(() => {
@@ -75,39 +66,69 @@ const SnakeGame = () => {
     });
   }, [snake.positions]);
   useEffect(() => {
+    directionRef.current = direction; // Toujours mettre à jour la direction actuelle
+  }, [direction]);
+  const smoothMove = (element: Position, toMove: number) => {
+    //imaginons toMove= 0.1
+  };
+  useEffect(() => {
     const moveSnake = () => {
       setSnake((prev) => {
         const newHead = {
-          x: prev.positions[0].x + directionRef.current.x * 0.1,
-          y: prev.positions[0].y + directionRef.current.y * 0.1,
+          x:
+            prev.positions[0].x < MAP_BORDERS.x.start
+              ? MAP_BORDERS.x.end
+              : prev.positions[0].x > MAP_BORDERS.x.end
+                ? MAP_BORDERS.x.start
+                : prev.positions[0].x + directionRef.current.x * 2,
+          y:
+            prev.positions[0].y < MAP_BORDERS.y.start
+              ? MAP_BORDERS.y.end
+              : prev.positions[0].y > MAP_BORDERS.y.end
+                ? MAP_BORDERS.y.start
+                : prev.positions[0].y + directionRef.current.y * 2,
           z: prev.positions[0].z,
         };
+
+        // Déplacer les autres segments pour suivre la tête (le dernier suit le premier)
+        const newPositions = [
+          newHead,
+          ...prev.positions.slice(0, prev.positions.length - 1),
+        ];
+
         return {
           ...prev,
-          positions: [
-            newHead,
-            ...prev.positions.slice(0, prev.positions.length - 1),
-          ],
+          positions: newPositions,
         };
       });
     };
-    const interval = setInterval(moveSnake, 17);
+
+    const interval = setInterval(moveSnake, 100);
     return () => clearInterval(interval);
   }, [directionRef.current]);
 
+  useEffect(() => {
+    for (var i = 0; i < 10000; i++) {}
+  }, [directionRef.current]);
   const onContextCreate = async (gl: any) => {
     glRef.current = gl;
     const renderer = new Renderer({ gl });
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     const scene = new Scene();
-    const camera = new PerspectiveCamera(
-      75,
-      gl.drawingBufferWidth / gl.drawingBufferHeight,
+    const aspectRatio = window.innerWidth / window.innerHeight;
+    const camera = new THREE.OrthographicCamera(
+      -window.innerWidth / 20,
+      window.innerWidth / 20,
+      window.innerHeight / 20,
+      -window.innerHeight / 20,
       0.1,
       1000
     );
-    camera.position.set(0, 0, 30);
+
+    camera.position.set(0, 0, 30); // Positionner la caméra
+    camera.lookAt(0, 0, 0); // Déplacer la caméra sur l'axe Z
+    camera.lookAt(0, 0, 0); // S'assurer que la caméra regarde vers le centre
 
     //update ref:
 
@@ -115,7 +136,6 @@ const SnakeGame = () => {
     Apple({ position: apples[0].position, scene: scene });
     //attribuer le ref a la sceneRef
     sceneRef.current = scene;
-    console.log("Scene created:", scene);
     //la fonction qui va s'executer plusieurs fois
     const render = () => {
       renderer.render(scene, camera);

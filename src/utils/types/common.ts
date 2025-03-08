@@ -14,13 +14,15 @@ export type NavigationGame = StackNavigationProp<NavigationType, "Game">;
 
 export type VectorTwoDimension<T> = { x: T; z: T };
 export type Distance = { start: number; end: number };
-export type MapBorders = VectorTwoDimension<Distance>;
+export type MapBorders<T = string> = Position<T>;
 
-export type Position = {
-  x: number;
-  y: number;
-  z: number;
-};
+export type Position<T = string> = T extends string
+  ? {
+      x: number;
+      y: number;
+      z: number;
+    }
+  : { x: T; y: T; z?: T };
 
 export type ObjPosition = Position & { ref?: any };
 //[]

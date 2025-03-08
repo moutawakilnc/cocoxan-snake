@@ -6,8 +6,8 @@ const SnakeFragment = ({ position, rotation }: SnakeFragmentProps) => {
   const material = new MeshBasicMaterial({ color: 0x00ff00 });
   const mesh = new Mesh(geometry, material);
 
+  mesh.scale.set(1, 1, 1);
   mesh.position.set(position.x, position.y, position.z);
-  mesh.rotation.y = rotation.current;
 
   return mesh;
 };
