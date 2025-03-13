@@ -4,9 +4,9 @@ import { ReactNode } from "react";
 export type ButtonType = "native" | "flex";
 
 export type NavigationType = {
-  Home: undefined;
-  Game: any;
-  //Profile: { userId: number };  Si tu veux passer des paramètres
+	Home: undefined;
+	Game: any;
+	//Profile: { userId: number };  Si tu veux passer des paramètres
 };
 
 export type NavigationHome = StackNavigationProp<NavigationType, "Home">;
@@ -17,48 +17,48 @@ export type Distance = { start: number; end: number };
 export type MapBorders<T = string> = Position<T>;
 
 export type Position<T = string> = T extends string
-  ? {
-      x: number;
-      y: number;
-      z: number;
-    }
-  : { x: T; y: T; z?: T };
+	? {
+			x: number;
+			y: number;
+			z: number;
+	  }
+	: { x: T; y: T; z?: T };
 
 export type ObjPosition = Position & { ref?: any };
 //[]
 export type ElementPositions = ObjPosition[];
 export type ElementInSpace<T = unknown> = T extends []
-  ? ObjPosition[]
-  : ObjPosition;
+	? ObjPosition[]
+	: ObjPosition;
 
 export interface Snake {
-  name: String;
-  positions: ElementInSpace<[]>;
+	name: String;
+	positions: ElementInSpace<[]>;
 }
 
 export interface IApple {
-  name: String;
-  position: ElementInSpace;
+	name: String;
+	position: ElementInSpace;
 }
 
 export enum GameDifficulty {
-  EASY = "easy",
-  MEDIUM = "medium",
-  HARD = "hard",
+	EASY = "easy",
+	MEDIUM = "medium",
+	HARD = "hard",
 }
 export interface GameContextState {
-  gameScore: number;
-  setGameScore?: React.Dispatch<React.SetStateAction<number>>;
-  gameStatus: GameStatus;
-  setGameStatus: React.Dispatch<React.SetStateAction<GameStatus>>;
-  gameDifficulty: GameDifficulty;
-  setGameDifficulty?: React.Dispatch<React.SetStateAction<GameDifficulty>>;
-  appleEaten: number;
-  setAppleEaten: React.Dispatch<React.SetStateAction<number>>;
+	gameScore: number;
+	setGameScore?: React.Dispatch<React.SetStateAction<number>>;
+	gameStatus: GameStatus;
+	setGameStatus: React.Dispatch<React.SetStateAction<GameStatus>>;
+	gameDifficulty: GameDifficulty;
+	setGameDifficulty?: React.Dispatch<React.SetStateAction<GameDifficulty>>;
+	appleEaten: number;
+	setAppleEaten: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export type GameStatus = "READY" | "PLAY" | "LOST";
 
 export interface GameProviderProps {
-  children?: ReactNode;
+	children?: ReactNode;
 }

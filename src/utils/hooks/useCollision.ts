@@ -1,33 +1,38 @@
 import { useEffect, useState } from "react";
-import { Position } from "../types/common";
+import { MAP_BORDERS } from "../constants/Game";
+import { UseCollisionProps } from "../types/componentProps";
 
-const useCollision = (item: Position, items: Position[], tolerance = 0.08) => {
-  const [isColliding, setIsColliding] = useState<Boolean>(false);
-  const [collisionIndex, setCollisionIndex] = useState<number | null>(null);
-  useEffect(() => {
-    console.log("item.x:", item.x);
-    console.log("position.x:", items[0].x);
-  }, []);
-  useEffect(() => {
-    const checkCollision = () => {
-      const index = items.findIndex((position) => {
-        return (
-          Math.abs(item.x - position.x) < tolerance &&
-          Math.abs(item.z - position.z) < tolerance
-        );
-      });
-      if (index !== -1) {
-        setIsColliding(true);
-        setCollisionIndex(index);
-      } else {
-        setIsColliding(false);
-        setCollisionIndex(null);
-      }
-    };
-    checkCollision();
-  }, [item, items, tolerance]);
+export interface CollisionState {
+	type?: "x" | "y";
+	newHead?: any;
+}
 
-  return { isColliding, collisionIndex };
+const useCollision = ({ snake, setSnake }: UseCollisionProps) => {
+	const head = snake.positions[0];
+
+	const [isOutOfMap, setIsOutOfMap] = useState<CollisionState>({});
+
+	useEffect(() => {
+		if (head.x < MAP_BORDERS.x.start || head.x > MAP_BORDERS.x.end) {
+			const newHead =
+				head.x < MAP_BORDERS.x.start ? MAP_BORDERS.x.end : MAP_BORDERS.x.start;
+			setIsOutOfMap({
+				type: "x",
+				newHead: newHead,
+			});
+		} else if (head.y < MAP_BORDERS.y.start || head.y > MAP_BORDERS.y.end) {
+			const newHead =
+				head.y < MAP_BORDERS.y.start ? MAP_BORDERS.y.end : MAP_BORDERS.y.start;
+			setIsOutOfMap({
+				type: "y",
+				newHead: newHead,
+			});
+		} else {
+			setIsOutOfMap({}); // If no collision, reset state
+		}
+	}, [snake.positions]);
+
+	return { isOutOfMap };
 };
 
 export default useCollision;
