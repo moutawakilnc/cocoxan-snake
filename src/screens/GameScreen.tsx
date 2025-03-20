@@ -1,43 +1,29 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { View } from "react-native";
 import { GLView } from "expo-gl";
 import { Renderer, THREE } from "expo-three";
-import { PerspectiveCamera, Scene } from "three";
+import { Scene } from "three";
 import SnakeFragment from "../components/SnakeFragment/SnakeFragment";
 import Apple from "../components/Apple/Apple";
-import { IApple, Position, Snake } from "../utils/types/common";
-import { MAP_BORDERS } from "../utils/constants/Game";
+import { Snake } from "../utils/types/common";
 import useCollision from "../utils/hooks/useCollision";
 import useSnakeMouvement from "../utils/hooks/useSnakeMouvement";
+import { GameLogicContext } from "../utils/context/gameLogicContext";
 
 const SnakeGame = () => {
+	const { snake, setSnake, apples, setApples, eatenApples, setEatenApples } =
+		useContext(GameLogicContext);
 	const glRef = useRef(null);
-	const [snake, setSnake] = useState<Snake>({
-		name: "player",
-		positions: [
-			{ x: 0, y: 0, z: 0 },
-			{ x: -2, y: 0, z: 0 },
-			{ x: -4, y: 0, z: 0 },
-		],
-	});
 
 	const snakeRefs = useRef<any[]>(new Array());
 	const sceneRef = useRef<any>(null);
-	const [apples, setApples] = useState<IApple[]>([
-		{ name: "apple_1", position: { x: 3, y: 0, z: 0 } },
-	]);
+
 	const [direction, setDirection] = useState({ x: 1, y: 0, z: 0 });
 	const rotation = useRef(0);
 	const directionRef = useRef({ x: 1, y: 0, z: 0 });
 
-	const { isOutOfMap } = useCollision({
-		snake: snake,
-		setSnake: setSnake,
-	});
-	useSnakeMouvement({
-		snake: snake,
-		setSnake: setSnake,
-	});
+	useCollision();
+	useSnakeMouvement();
 
 	useEffect(() => {
 		const handleKeyPress = (event: KeyboardEvent) => {
@@ -82,7 +68,7 @@ const SnakeGame = () => {
 
 	useEffect(() => {
 		const moveSnake = () => {
-			setSnake((prev) => {
+			setSnake((prev: Snake) => {
 				const newHead = {
 					x: prev.positions[0].x + directionRef.current.x * 2,
 					y: prev.positions[0].y + directionRef.current.y * 2,
@@ -128,7 +114,7 @@ const SnakeGame = () => {
 		//update ref:
 
 		//ajout des pommes
-		Apple({ position: apples[0].position, scene: scene });
+		Apple({ position: apples[0].element, scene: scene });
 		//attribuer le ref a la sceneRef
 		sceneRef.current = scene;
 		//la fonction qui va s'executer plusieurs fois

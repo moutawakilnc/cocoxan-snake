@@ -1,27 +1,23 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Snake } from "../types/common";
-import { UseSnakeProps } from "../types/componentProps";
-import useCollision from "./useCollision";
+import { GameLogicContext } from "../context/gameLogicContext";
 
-const useSnakeMouvement = ({ snake, setSnake }: UseSnakeProps) => {
-	const { isOutOfMap } = useCollision({
-		snake: snake,
-		setSnake: setSnake,
-	});
+const useSnakeMouvement = () => {
+	const { snake, setSnake, outOfMap } = useContext(GameLogicContext);
 
 	useEffect(() => {
-		if (["x", "y"].includes(isOutOfMap.type ?? "")) {
+		if (["x", "y"].includes(outOfMap.type ?? "")) {
 			setSnake((prev: Snake) => ({
 				...prev,
 				positions: [
-					{ ...prev.positions[0], [isOutOfMap.type!]: isOutOfMap.newHead },
+					{ ...prev.positions[0], [outOfMap.type!]: outOfMap.newHead },
 					...prev.positions.slice(1),
 				],
 			}));
 		}
-	}, [isOutOfMap]);
+	}, [outOfMap]);
 
-	return { isOutOfMap };
+	return { outOfMap, snake };
 };
 
 export default useSnakeMouvement;

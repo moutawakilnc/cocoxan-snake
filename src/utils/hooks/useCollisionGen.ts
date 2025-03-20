@@ -1,8 +1,9 @@
 import { useContext, useEffect } from "react";
 import { MAP_BORDERS } from "../constants/Game";
 import { GameLogicContext } from "../context/gameLogicContext";
+import { IUseCollision } from "../types/componentProps";
 
-const useCollision = () => {
+const useCollision = ({ toCompareWith }: IUseCollision) => {
 	const { snake, outOfMap, setOutOfMap } = useContext(GameLogicContext);
 	const head = snake.positions[0];
 
