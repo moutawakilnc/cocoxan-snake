@@ -6,9 +6,9 @@ import { Scene } from "three";
 import SnakeFragment from "../components/SnakeFragment/SnakeFragment";
 import Apple from "../components/Apple/Apple";
 import { Snake } from "../utils/types/common";
-import useCollision from "../utils/hooks/useCollision";
 import useSnakeMouvement from "../utils/hooks/useSnakeMouvement";
 import { GameLogicContext } from "../utils/context/gameLogicContext";
+import useCollision from "../utils/hooks/useCollision";
 
 const SnakeGame = () => {
 	const { snake, setSnake, apples, setApples, eatenApples, setEatenApples } =
@@ -22,7 +22,11 @@ const SnakeGame = () => {
 	const rotation = useRef(0);
 	const directionRef = useRef({ x: 1, y: 0, z: 0 });
 
-	useCollision();
+	useCollision({
+		element: snake.positions[0],
+		obstacle: apples[0],
+		collisionType: "wall",
+	});
 	useSnakeMouvement();
 
 	useEffect(() => {

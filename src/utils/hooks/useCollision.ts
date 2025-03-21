@@ -1,32 +1,41 @@
-import { useContext, useEffect } from "react";
-import { MAP_BORDERS } from "../constants/Game";
-import { GameLogicContext } from "../context/gameLogicContext";
+import { useEffect, useState } from "react";
 
-const useCollision = () => {
-	const { snake, outOfMap, setOutOfMap } = useContext(GameLogicContext);
-	const head = snake.positions[0];
+import { IUseCollisionProps } from "../types/componentProps";
+import { CollisionState } from "../types/common";
+
+const useCollision = ({
+	element,
+	obstacle,
+	collisionType,
+}: IUseCollisionProps) => {
+	const [collision, setCollision] = useState<CollisionState<
+		typeof element,
+		typeof obstacle
+	> | null>(null);
 
 	useEffect(() => {
-		if (head.x < MAP_BORDERS.x.start || head.x > MAP_BORDERS.x.end) {
-			const newHead =
-				head.x < MAP_BORDERS.x.start ? MAP_BORDERS.x.end : MAP_BORDERS.x.start;
-			setOutOfMap({
-				type: "x",
-				newHead: newHead,
+		if (element.x < obstacle.x.start || element.x > obstacle.x.end) {
+			/*const newHead =
+				element.x < obstacle.x.start ? obstacle.x.end : obstacle.x.start;*/
+			setCollision({
+				firstElement: element,
+				secondElement: obstacle,
+				type: collisionType,
+				axis: "x",
 			});
-		} else if (head.y < MAP_BORDERS.y.start || head.y > MAP_BORDERS.y.end) {
-			const newHead =
-				head.y < MAP_BORDERS.y.start ? MAP_BORDERS.y.end : MAP_BORDERS.y.start;
-			setOutOfMap({
-				type: "y",
-				newHead: newHead,
+		} else if (element.y < obstacle.z.start || element.z > obstacle.z.end) {
+			setCollision({
+				firstElement: element,
+				secondElement: obstacle,
+				type: collisionType,
+				axis: "y",
 			});
 		} else {
-			setOutOfMap({}); // If no collision, reset state
+			setCollision(null); // If no collision, reset state
 		}
-	}, [snake.positions]);
+	}, [element, obstacle]);
 
-	return { outOfMap };
+	return { collision };
 };
 
 export default useCollision;

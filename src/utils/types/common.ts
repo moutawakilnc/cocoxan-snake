@@ -1,5 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ReactNode } from "react";
+import { ElementTypes } from "../constants/Game";
 
 export type ButtonType = "native" | "flex";
 
@@ -65,11 +66,21 @@ export interface IGameLogicContext {
 	setApples: any;
 	eatenApples: number;
 	setEatenApples: any;
-	outOfMap: any;
-	setOutOfMap: any;
+	collision: UseHooksUpdateState<CollisionState<any, any>>;
 }
 export type GameStatus = "READY" | "PLAY" | "LOST";
-
 export interface ProviderProps {
 	children?: ReactNode;
+}
+export interface UseHooksUpdateState<T> {
+	value: T;
+	setValue: React.Dispatch<React.SetStateAction<T>>;
+}
+
+export type CollisionType = "snake" | "wall" | "map";
+export interface CollisionState<T, O> {
+	firstElement: T;
+	secondElement: O;
+	type?: CollisionType;
+	axis: "x" | "y" | "z";
 }

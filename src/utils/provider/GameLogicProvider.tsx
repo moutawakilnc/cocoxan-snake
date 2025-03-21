@@ -6,9 +6,9 @@ import {
 	GameStatus,
 	Snake,
 	TApple,
+	CollisionState,
 } from "../types/common";
 import { GameLogicContext } from "../context/gameLogicContext";
-import { CollisionState } from "../types/componentProps";
 
 const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
 	const [snake, setSnake] = useState<Snake>({
@@ -23,7 +23,10 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
 		{ name: "apple_1", element: { x: 3, y: 0, z: 0 } },
 	]);
 	const [eatenApples, setEatenApples] = useState(0);
-	const [outOfMap, setOutOfMap] = useState<CollisionState>();
+	const [collision, setCollision] = useState<CollisionState<
+		Snake,
+		TApple
+	> | null>();
 	return (
 		<GameLogicContext.Provider
 			value={{
@@ -33,8 +36,7 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
 				setSnake,
 				eatenApples,
 				setEatenApples,
-				outOfMap,
-				setOutOfMap,
+				collision: { value: collision, setValue: setCollision },
 			}}
 		>
 			{children}

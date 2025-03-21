@@ -1,9 +1,12 @@
 import { Euler } from "three";
 import {
 	ButtonType,
+	CollisionType,
 	Distance,
+	ObjPosition,
 	Position,
 	Snake,
+	UseHooksUpdateState,
 	VectorTwoDimension,
 } from "./common";
 import { SetStateAction } from "react";
@@ -36,16 +39,12 @@ export interface UseCollisionProps {
 	snake: Snake;
 	setSnake: any;
 }
-export interface UseHooksUpdateState<T> {
-	value: T;
-	setValue: React.Dispatch<React.SetStateAction<T>>;
-}
-export interface UseSnakeProps extends UseCollisionProps {}
-export interface CollisionState {
-	type?: "x" | "y";
-	newHead?: any;
-}
 
-export interface IUseCollision {
-	toCompareWith: VectorTwoDimension<Distance>;
+export interface UseSnakeProps extends UseCollisionProps {}
+
+export interface IUseCollisionProps {
+	element: any;
+	obstacle: any;
+	collision: UseHooksUpdateState<Object>;
+	collisionType: CollisionType;
 }

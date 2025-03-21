@@ -1,8 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Snake } from "../types/common";
-import { UseHooksUpdateState, UseSnakeProps } from "../types/componentProps";
-import useCollision from "./useCollision";
-import useSnakeMouvement from "./useSnakeMouvement";
+import { Snake, UseHooksUpdateState } from "../types/common";
 import { GameLogicContext } from "../context/gameLogicContext";
 
 const useApple = ({ value, setValue }: UseHooksUpdateState<Snake>) => {
