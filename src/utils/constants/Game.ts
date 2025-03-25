@@ -1,3 +1,4 @@
+import { EXRLoader } from "three-stdlib";
 import { Distance, MapBorders, Position } from "../types/common";
 
 export const GAME_BOARD_SIZE = 20;
@@ -7,10 +8,21 @@ export const MAP_BORDERS: MapBorders<Distance> = {
 	y: { start: -20, end: 27 },
 };
 
+export enum TypeOfObjects {
+	snake,
+	apple,
+	wall,
+}
 export const EAT_TOLERANCE: Partial<Position> = { x: 0.6, z: 0.2 };
 
-export enum ElementTypes {
+export enum ElementsEnum {
 	snake,
-	map,
+	wall,
 	apple,
 }
+
+export const DIRECTION_MOVE = {
+	x: 2,
+	y: 2,
+	z: 2,
+};

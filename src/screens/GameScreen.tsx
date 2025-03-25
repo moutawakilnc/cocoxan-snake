@@ -11,8 +11,17 @@ import { GameLogicContext } from "../utils/context/gameLogicContext";
 import useCollision from "../utils/hooks/useCollision";
 
 const SnakeGame = () => {
-	const { snake, setSnake, apples, setApples, eatenApples, setEatenApples } =
-		useContext(GameLogicContext);
+	const {
+		snake,
+		setSnake,
+		apples,
+		setApples,
+		eatenApples,
+		setEatenApples,
+		snakeAnimation,
+		snakeAnimationControl,
+		collision,
+	} = useContext(GameLogicContext);
 	const glRef = useRef(null);
 
 	const snakeRefs = useRef<any[]>(new Array());
@@ -20,14 +29,34 @@ const SnakeGame = () => {
 
 	const [direction, setDirection] = useState({ x: 1, y: 0, z: 0 });
 	const rotation = useRef(0);
-	const directionRef = useRef({ x: 1, y: 0, z: 0 });
+	const snakeMouvementRef = useRef<number | null>(null);
 
 	useCollision({
 		element: snake.positions[0],
 		obstacle: apples[0],
 		collisionType: "wall",
+		collision: { value: collision.value, setValue: collision.setValue },
+	});
+
+	useCollision({
+		element: snake.positions[0],
+		obstacle: apples[0],
+		collisionType: "apple",
+		collision: { value: collision.value, setValue: collision.setValue },
 	});
 	useSnakeMouvement();
+	useEffect(() => {
+		//Start snake
+		snakeAnimationControl.startSnake();
+	}, []);
+
+	useEffect(() => {
+		switch (collision.value) {
+			case "apple":
+				snakeMouvementRef.current=
+			
+		}
+	}, [collision]);
 
 	useEffect(() => {
 		const handleKeyPress = (event: KeyboardEvent) => {
@@ -65,36 +94,6 @@ const SnakeGame = () => {
 			snakeRefs.current[index].rotation.y = rotation.current;
 		});
 	}, [snake.positions]);
-	console.log("snake pos", snake.positions);
-	useEffect(() => {
-		directionRef.current = direction; // Toujours mettre à jour la direction actuelle
-	}, [direction]);
-
-	useEffect(() => {
-		const moveSnake = () => {
-			setSnake((prev: Snake) => {
-				const newHead = {
-					x: prev.positions[0].x + directionRef.current.x * 2,
-					y: prev.positions[0].y + directionRef.current.y * 2,
-					z: prev.positions[0].z,
-				};
-
-				// Déplacer les autres segments pour suivre la tête (le dernier suit le premier)
-				const newPositions = [
-					newHead,
-					...prev.positions.slice(0, prev.positions.length - 1),
-				];
-
-				return {
-					...prev,
-					positions: newPositions,
-				};
-			});
-		};
-
-		const interval = setInterval(moveSnake, 100);
-		return () => clearInterval(interval);
-	}, [directionRef.current]);
 
 	const onContextCreate = async (gl: any) => {
 		glRef.current = gl;

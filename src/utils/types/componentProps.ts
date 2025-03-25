@@ -6,10 +6,12 @@ import {
 	ObjPosition,
 	Position,
 	Snake,
+	typeOfElements,
 	UseHooksUpdateState,
 	VectorTwoDimension,
 } from "./common";
 import { SetStateAction } from "react";
+import { ElementsEnum } from "../constants/Game";
 
 export interface IButtonProps {
 	title?: string;
@@ -44,7 +46,9 @@ export interface UseSnakeProps extends UseCollisionProps {}
 
 export interface IUseCollisionProps {
 	element: any;
-	obstacle: any;
-	collision: UseHooksUpdateState<Object>;
-	collisionType: CollisionType;
+	obstacle: typeOfElements;
+}
+
+export interface ObjectSizeable {
+	[a: keyof Position<"">]: { start: number; end: number };
 }

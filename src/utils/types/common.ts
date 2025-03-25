@@ -1,6 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ReactNode } from "react";
-import { ElementTypes } from "../constants/Game";
 
 export type ButtonType = "native" | "flex";
 
@@ -17,32 +16,23 @@ export type VectorTwoDimension<T> = { x: T; z: T };
 export type Distance = { start: number; end: number };
 export type MapBorders<T = string> = Position<T>;
 
-export type Position<T = string> = T extends string
-	? {
-			x: number;
-			y: number;
-			z: number;
-	  }
-	: { x: T; y: T; z?: T };
+export type Position<T = number> = {
+	x: T;
+	y: T;
+	z?: T;
+};
 
-export type ObjPosition = Position & { ref?: any };
+export type ObjPosition<T = number> = Position<T> & { ref?: any };
 //[]
-export type ElementPositions = ObjPosition[];
 
-export type ElementInSpace<T = unknown> = T extends []
-	? ObjPosition[]
-	: ObjPosition;
-export type NamedElementInSpace = { name: string; element: ElementInSpace };
-export interface IApple {
-	apples: NamedElementInSpace[];
-}
+export type NamedElementInSpace<T = number, Y = undefined> = {
+	name: string;
+	element: Y extends undefined ? ObjPosition<T> : ObjPosition<T>[];
+};
 
-export interface Snake {
-	name: String;
-	positions: ElementInSpace<[]>;
-}
+export interface Snake extends NamedElementInSpace<number, []> {}
 
-export type TApple = NamedElementInSpace[];
+export interface TApple extends NamedElementInSpace<Distance> {}
 
 export enum GameDifficulty {
 	EASY = "easy",
@@ -59,28 +49,38 @@ export interface GameContextState {
 	appleEaten: number;
 	setAppleEaten: React.Dispatch<React.SetStateAction<number>>;
 }
+
+export type DirectionType = "up" | "down" | "right" | "left";
+
 export interface IGameLogicContext {
 	snake: Snake;
 	setSnake: any;
-	apples: TApple;
+	direction: DirectionType | null;
+	setDirection: any;
+	apples: TApple[];
 	setApples: any;
 	eatenApples: number;
 	setEatenApples: any;
-	collision: UseHooksUpdateState<CollisionState<any, any>>;
+	collision: CollisionType;
+	snakeAnimation: AnimationStatus;
+	snakeAnimationControl: { [a: string]: EmptyParamVoidReturn };
 }
 export type GameStatus = "READY" | "PLAY" | "LOST";
+
+export type AnimationStatus = "STOPPED" | "RUNNING" | "PAUSED";
+
+export type EmptyParamVoidReturn = () => void;
+
 export interface ProviderProps {
 	children?: ReactNode;
 }
 export interface UseHooksUpdateState<T> {
-	value: T;
-	setValue: React.Dispatch<React.SetStateAction<T>>;
+	value: T | null;
+	setValue: React.Dispatch<React.SetStateAction<T | null>>;
 }
 
-export type CollisionType = "snake" | "wall" | "map";
-export interface CollisionState<T, O> {
-	firstElement: T;
-	secondElement: O;
-	type?: CollisionType;
-	axis: "x" | "y" | "z";
-}
+export type CollisionType = {
+	axis: "x" | "y" | "z" | null;
+};
+
+export type Wall = NamedElementInSpace<Distance, []>;

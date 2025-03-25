@@ -1,41 +1,25 @@
 import { useEffect, useState } from "react";
 
 import { IUseCollisionProps } from "../types/componentProps";
-import { CollisionState } from "../types/common";
+import { CollisionType } from "../types/common";
 
-const useCollision = ({
-	element,
-	obstacle,
-	collisionType,
-}: IUseCollisionProps) => {
-	const [collision, setCollision] = useState<CollisionState<
-		typeof element,
-		typeof obstacle
-	> | null>(null);
-
+const useCollision = ({ element, obstacle }: IUseCollisionProps) => {
+	const [collisionUp, setValue] = useState<CollisionType | null>(null);
 	useEffect(() => {
 		if (element.x < obstacle.x.start || element.x > obstacle.x.end) {
-			/*const newHead =
-				element.x < obstacle.x.start ? obstacle.x.end : obstacle.x.start;*/
-			setCollision({
-				firstElement: element,
-				secondElement: obstacle,
-				type: collisionType,
+			setValue({
 				axis: "x",
 			});
-		} else if (element.y < obstacle.z.start || element.z > obstacle.z.end) {
-			setCollision({
-				firstElement: element,
-				secondElement: obstacle,
-				type: collisionType,
+		} else if (element.y < obstacle.y.start || element.y > obstacle.y.end) {
+			setValue({
 				axis: "y",
 			});
 		} else {
-			setCollision(null); // If no collision, reset state
+			setValue(null);
 		}
 	}, [element, obstacle]);
 
-	return { collision };
+	return collisionUp;
 };
 
 export default useCollision;
