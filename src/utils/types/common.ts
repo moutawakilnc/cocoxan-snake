@@ -1,5 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ReactNode } from "react";
+import { TypeOfObjects } from "../constants/Game";
 
 export type ButtonType = "native" | "flex";
 
@@ -27,12 +28,13 @@ export type ObjPosition<T = number> = Position<T> & { ref?: any };
 
 export type NamedElementInSpace<T = number, Y = undefined> = {
 	name: string;
+	type: TypeOfObjects;
 	element: Y extends undefined ? ObjPosition<T> : ObjPosition<T>[];
 };
 
 export interface Snake extends NamedElementInSpace<number, []> {}
 
-export interface TApple extends NamedElementInSpace<Distance> {}
+export interface TApple extends NamedElementInSpace {}
 
 export enum GameDifficulty {
 	EASY = "easy",
@@ -79,8 +81,6 @@ export interface UseHooksUpdateState<T> {
 	setValue: React.Dispatch<React.SetStateAction<T | null>>;
 }
 
-export type CollisionType = {
-	axis: "x" | "y" | "z" | null;
-};
+export type CollisionType = boolean;
 
 export type Wall = NamedElementInSpace<Distance, []>;

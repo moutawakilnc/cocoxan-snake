@@ -1,17 +1,11 @@
-import { Euler } from "three";
 import {
 	ButtonType,
-	CollisionType,
 	Distance,
+	NamedElementInSpace,
 	ObjPosition,
 	Position,
 	Snake,
-	typeOfElements,
-	UseHooksUpdateState,
-	VectorTwoDimension,
 } from "./common";
-import { SetStateAction } from "react";
-import { ElementsEnum } from "../constants/Game";
 
 export interface IButtonProps {
 	title?: string;
@@ -45,8 +39,8 @@ export interface UseCollisionProps {
 export interface UseSnakeProps extends UseCollisionProps {}
 
 export interface IUseCollisionProps {
-	element: any;
-	obstacle: typeOfElements;
+	snake: Snake;
+	obstacle: NamedElementInSpace<Distance, []>;
 }
 
 export interface ObjectSizeable {

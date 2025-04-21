@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
 
 import { IUseCollisionProps } from "../types/componentProps";
-import { CollisionType } from "../types/common";
+import { CollisionType, ObjPosition } from "../types/common";
+import { TypeOfObjects } from "../constants/Game";
 
-const useCollision = ({ element, obstacle }: IUseCollisionProps) => {
-	const [collisionUp, setValue] = useState<CollisionType | null>(null);
+const useCollision = ({ snake, obstacle }: IUseCollisionProps) => {
+	const [collisionUp, setValue] = useState<CollisionType>(false);
 	useEffect(() => {
-		if (element.x < obstacle.x.start || element.x > obstacle.x.end) {
-			setValue({
-				axis: "x",
-			});
-		} else if (element.y < obstacle.y.start || element.y > obstacle.y.end) {
-			setValue({
-				axis: "y",
-			});
-		} else {
-			setValue(null);
+		if (obstacle.type === TypeOfObjects.wall) {
+			const head: ObjPosition = snake.element[0];
+			if (
+				obstacle.element.some(
+					(wallFragments) =>
+						head.x >= wallFragments.x.start &&
+						head.x <= wallFragments.x.end &&
+						head.y >= wallFragments.y.start &&
+						head.y <= wallFragments.y.end
+				)
+			) {
+				setValue(true);
+			}
 		}
-	}, [element, obstacle]);
+	}, [obstacle]);
 
 	return collisionUp;
 };

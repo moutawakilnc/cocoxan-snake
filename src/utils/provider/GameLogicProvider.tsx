@@ -11,10 +11,12 @@ import {
 } from "../types/common";
 import { GameLogicContext } from "../context/gameLogicContext";
 import useCollision from "../hooks/useCollision";
+import { MAP_BORDERS, TypeOfObjects } from "../constants/Game";
 
 const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
 	const [snake, setSnake] = useState<Snake>({
 		name: "player_snake",
+		type: TypeOfObjects.snake,
 		element: [
 			{ x: 0, y: 0, z: 0 },
 			{ x: -2, y: 0, z: 0 },
@@ -24,10 +26,11 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
 	const [apples, setApples] = useState<TApple[]>([
 		{
 			name: "apple",
+			type: TypeOfObjects.apple,
 			element: {
-				x: { start: 3, end: 3 },
-				y: { start: 0, end: 3 },
-				z: { start: 0, end: 3 },
+				x: 3,
+				y: 3,
+				z: 0,
 			},
 		},
 	]);
@@ -45,7 +48,25 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
 
 	const [wall] = useState<Wall>({
 		name: "wall",
-		element: [{ x: { start: -25, end: 40 }, y: { start: -20, end: 27 } }],
+		type: TypeOfObjects.wall,
+		element: [
+			{
+				x: { start: MAP_BORDERS.x.start, end: MAP_BORDERS.x.end },
+				y: { start: MAP_BORDERS.y.start, end: MAP_BORDERS.y.start + 1 },
+			},
+			{
+				x: { start: MAP_BORDERS.x.start, end: MAP_BORDERS.x.start + 1 },
+				y: { start: MAP_BORDERS.y.start, end: MAP_BORDERS.y.end },
+			},
+			{
+				x: { start: MAP_BORDERS.x.start, end: MAP_BORDERS.x.end },
+				y: { start: MAP_BORDERS.y.end - 1, end: MAP_BORDERS.y.end },
+			},
+			{
+				x: { start: MAP_BORDERS.x.end - 1, end: MAP_BORDERS.x.end },
+				y: { start: MAP_BORDERS.y.start, end: MAP_BORDERS.y.end },
+			},
+		],
 	});
 	useEffect(() => {
 		if (!collisionWall) return;
