@@ -1,10 +1,12 @@
+import { TypeOfObjects } from "../constants/Game";
 import {
   ButtonType,
   Distance,
   NamedElementInSpace,
   ObjPosition,
-  Position,
   Snake,
+  TApple,
+  Wall,
 } from "./common";
 
 export interface IButtonProps {
@@ -39,9 +41,12 @@ export interface UseCollisionProps {
 export interface UseSnakeProps extends UseCollisionProps {}
 
 export interface IUseCollisionManagerProps {
-  snakeHead: ObjPosition<number>;
-  obstacle: NamedElementInSpace<Distance | number, []>;
+  objectA: ObjectOfGame | ObjectOfGame[];
+  objectB: ObjectOfGame | ObjectOfGame[];
+  type: TypeOfObjects;
 }
+
+export type ObjectOfGame = Snake | TApple | Wall;
 
 export interface IUseColl {
   objectA: ObjPosition<Distance>;

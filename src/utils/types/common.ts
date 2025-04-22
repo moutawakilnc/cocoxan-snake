@@ -66,7 +66,7 @@ export interface IGameLogicContext {
   setApples: any;
   eatenApples: number;
   setEatenApples: any;
-  isWallCollided: CollisionType<Distance>;
+  isWallCollided: CollisionType<string | boolean>;
   snakeAnimation: AnimationStatus;
   snakeAnimationControl: { [a: string]: EmptyParamVoidReturn };
 }
@@ -90,3 +90,4 @@ export type CollisionType<T> = {
 
 export type Wall = NamedElementInSpace<Distance, []>;
 export type WallfragmentZone = "TOP" | "LEFT" | "RIGHT" | "BOTTOM";
+export type CollisionZone = "HEAD" | "ALL" | "QUEUE";

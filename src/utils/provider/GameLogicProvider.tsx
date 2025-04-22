@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { GameStateContext } from "../context/gameStateContext";
 import {
-  GameDifficulty,
   ProviderProps,
   Snake,
   TApple,
@@ -37,13 +35,15 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
   const [eatenApples, setEatenApples] = useState(0);
 
   const collisionApple = useCollision({
-    snake: snake,
-    obstacle: apples,
+    objectA: snake,
+    objectB: apples,
+    type: TypeOfObjects.apple,
   });
 
   const collisionWall = useCollision({
-    element: snake.element[0],
-    obstacle: apples[0].element,
+    objectA: snake,
+    objectB: apples,
+    type: TypeOfObjects.wall,
   });
 
   const [wall] = useState<Wall>({
@@ -70,26 +70,12 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
   });
   useEffect(() => {
     if (!collisionWall) return;
-    switch (collisionWall?.axis) {
-      case null:
-        break;
-      default:
-        setApples((prev) => prev.filter((apple) => apple.name !== "apple"));
-        setEatenApples((prev) => prev++);
-        break;
-    }
   }, [collisionWall]);
 
   useEffect(() => {
     if (!collisionApple) return;
-    switch (collisionApple?.axis) {
-      case null:
-        break;
-      default:
-        setApples((prev) => prev.filter((apple) => apple.name !== "apple"));
-        setEatenApples((prev) => prev++);
-        break;
-    }
+    setApples((prev) => prev.filter((apple) => apple.name !== "apple"));
+    setEatenApples((prev) => prev++);
   }, [collisionApple]);
 
   const [direction, setDirection] = useState<DirectionType | null>(null);
@@ -116,7 +102,7 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
         setEatenApples,
         direction: direction,
         setDirection,
-        collision: collision,
+        isWallCollided: collisionWall,
         snakeAnimation: snakeAnimation,
         snakeAnimationControl: {
           startSnake,
