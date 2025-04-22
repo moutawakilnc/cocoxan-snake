@@ -1,29 +1,51 @@
 import { useEffect, useState } from "react";
+import { IUseCollisionManagerProps } from "../types/componentProps";
+import { CollisionType, Distance, ObjPosition } from "../types/common";
+import { SNAKE_SIZE, TypeOfObjects } from "../constants/Game";
+import { checkCollision } from "./collisionService";
 
-import { IUseCollisionProps } from "../types/componentProps";
-import { CollisionType, ObjPosition } from "../types/common";
-import { TypeOfObjects } from "../constants/Game";
+const useCollisionManager = ({
+  snakeHead,
+  obstacle,
+}: IUseCollisionManagerProps) => {
+  const [collisionUp, setValue] = useState<
+    CollisionType<typeof obstacle.element>
+  >({
+    collide: false,
+  });
+  useEffect(() => {
+    let arrival: ObjPosition<Distance> | undefined = undefined;
+    if (obstacle.type === TypeOfObjects.wall) {
+      const wallFragments: ObjPosition<Distance>[] =
+        obstacle.element as ObjPosition<Distance>[]; //for sure ;) , or not? :'(
+      const isWallCollided = wallFragments.some((wallFragment) => {
+        arrival = wallFragment;
+        return checkCollision({
+          objectA: {
+            x: { start: snakeHead.x, end: snakeHead.x + SNAKE_SIZE },
+            y: { start: snakeHead.y, end: snakeHead.y + SNAKE_SIZE },
+          },
+          objectB: wallFragment,
+        });
+      });
+      if (isWallCollided) {
+        setValue({ collide: arrival! });
+      } else {
+        setValue({ collide: false });
+      }
+    } else if (obstacle.type === TypeOfObjects.apple) {
+      const apples: ObjPosition<number>[] =
+        obstacle.element as ObjPosition<number>[];
 
-const useCollision = ({ snake, obstacle }: IUseCollisionProps) => {
-	const [collisionUp, setValue] = useState<CollisionType>(false);
-	useEffect(() => {
-		if (obstacle.type === TypeOfObjects.wall) {
-			const head: ObjPosition = snake.element[0];
-			if (
-				obstacle.element.some(
-					(wallFragments) =>
-						head.x >= wallFragments.x.start &&
-						head.x <= wallFragments.x.end &&
-						head.y >= wallFragments.y.start &&
-						head.y <= wallFragments.y.end
-				)
-			) {
-				setValue(true);
-			}
-		}
-	}, [obstacle]);
+      const isAppleEaten = apples.some(
+        (apple) => snakeHead.x === apple.x && snakeHead.y === apple.y
+      );
+      if (isAppleEaten) {
+      }
+    }
+  }, [obstacle]);
 
-	return collisionUp;
+  return collisionUp;
 };
 
-export default useCollision;
+export default useCollisionManager;
