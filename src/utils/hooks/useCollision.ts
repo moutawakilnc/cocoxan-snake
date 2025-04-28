@@ -23,18 +23,20 @@ const useCollisionManager = ({
   useEffect(() => {
     if (!Array.isArray(objectA)) {
       let nameOfObject: string | undefined;
-      let firstObject = castNumberObjectToDistance(
-        objectA.element as ObjPosition<number>,
-        objectA.type
-      );
-
+      let head: any = objectA.element;
+      head = castNumberObjectToDistance(
+        head as ObjPosition<number>,
+        TypeOfObjects.snake
+      ) as ObjPosition<Distance>;
       if (type === TypeOfObjects.wall) {
+        let wallFragmentCollided: ObjPosition<Distance> | undefined;
         if (!Array.isArray(objectB)) {
           const wallFragments = objectB.element as ObjPosition<Distance>[]; //for sure ;) , or not? :'(
           const isWallCollision = wallFragments.some((wallFragment) => {
             nameOfObject = wallFragment.name;
+            wallFragmentCollided = wallFragment;
             return checkCollision({
-              objectA: firstObject,
+              objectA: head,
               objectB: wallFragment,
             });
           });
@@ -50,7 +52,7 @@ const useCollisionManager = ({
         }
       } else if (type === TypeOfObjects.apple) {
         if (Array.isArray(objectB)) {
-          const apples = objectB as NamedElementInSpace[];
+          /*const apples = objectB as NamedElementInSpace[];
 
           const isAppleCollision = apples.some((apple) => {
             let appleObject: NamedElementInSpace<Distance> = {
@@ -61,6 +63,7 @@ const useCollisionManager = ({
               ),
             };
             nameOfObject = apple.name;
+            console.log("collision Apple");
             return checkCollision({
               objectA: firstObject,
               objectB: appleObject.element,
@@ -70,7 +73,7 @@ const useCollisionManager = ({
             setValue({ collide: nameOfObject! });
           } else {
             setValue({ collide: false });
-          }
+          }*/
         } else {
           console.error("Object apple, should be an array");
         }

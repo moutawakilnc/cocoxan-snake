@@ -28,3 +28,10 @@ export const DIRECTION_MOVE = {
 
 export const SNAKE_SIZE = 2;
 export const APPLE_SIZE = 2;
+
+export enum MOUVEMENT_KEY {
+  up = "ArrowUp",
+  down = "ArrowDown",
+  left = "ArrowLeft",
+  right = "ArrowRight",
+}

@@ -1,6 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ReactNode } from "react";
-import { TypeOfObjects } from "../constants/Game";
+import { MOUVEMENT_KEY, TypeOfObjects } from "../constants/Game";
 
 export type ButtonType = "native" | "flex";
 
@@ -55,7 +55,10 @@ export interface GameContextState {
   setAppleEaten: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export type DirectionType = "up" | "down" | "right" | "left";
+export type DirectionType = {
+  type: MOUVEMENT_KEY;
+  coordinates: Required<Position>;
+};
 
 export interface IGameLogicContext {
   snake: Snake;
@@ -67,12 +70,16 @@ export interface IGameLogicContext {
   eatenApples: number;
   setEatenApples: any;
   isWallCollided: CollisionType<string | boolean>;
-  snakeAnimation: AnimationStatus;
-  snakeAnimationControl: { [a: string]: EmptyParamVoidReturn };
+  gameAnimation: AnimationControl[keyof AnimationControl];
+  gameAnimationControl: { [a in keyof AnimationControl]: EmptyParamVoidReturn };
 }
 export type GameStatus = "READY" | "PLAY" | "LOST";
 
-export type AnimationStatus = "STOPPED" | "RUNNING" | "PAUSED";
+export type AnimationControl = {
+  stop: "STOPPED";
+  start: "RUNNING";
+  pause: "PAUSED";
+};
 
 export type EmptyParamVoidReturn = () => void;
 

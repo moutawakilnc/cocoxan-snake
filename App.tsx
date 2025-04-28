@@ -5,7 +5,7 @@ import { IntlProvider } from "react-intl";
 import messages, { Locale } from "./src/utils/locales";
 import { StyleSheet } from "react-native";
 import LangueSelector from "./src/components/LangueSelector/LangueSelector";
-import GameProvider from "./src/utils/provider/GameProvider";
+import GameProvider from "./src/utils/provider/GameLogicProvider";
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>("fr");

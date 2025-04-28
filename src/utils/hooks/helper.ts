@@ -1,5 +1,5 @@
 import { APPLE_SIZE, SNAKE_SIZE, TypeOfObjects } from "../constants/Game";
-import { Distance, ObjPosition } from "../types/common";
+import { DirectionType, Distance, ObjPosition } from "../types/common";
 
 export const castNumberObjectToDistance = (
   object: ObjPosition<number>,
@@ -25,4 +25,27 @@ export const castNumberObjectToDistance = (
   objectToReturn.x.end += sizeToAdd;
   objectToReturn.y.end += sizeToAdd;
   return objectToReturn;
+};
+
+export const mapDirectionToMouvement = (direction: DirectionType["type"]) => {
+  let directionCoords: DirectionType["coordinates"] | undefined;
+  switch (direction) {
+    case "ArrowRight":
+      directionCoords = { x: 0, y: 1, z: 0 };
+      break;
+    case "ArrowDown":
+      directionCoords = { x: 0, y: -1, z: 0 };
+      break;
+    case "ArrowLeft":
+      directionCoords = { x: -1, y: 0, z: 0 };
+      break;
+    case "ArrowRight":
+      directionCoords = { x: 1, y: 0, z: 0 };
+      break;
+    default:
+      directionCoords = { x: 0, y: 0, z: 0 };
+      break;
+  }
+
+  return { type: direction, coordinates: directionCoords } as DirectionType;
 };

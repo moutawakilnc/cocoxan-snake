@@ -4,8 +4,8 @@ import {
   Snake,
   TApple,
   DirectionType,
-  AnimationStatus,
   Wall,
+  AnimationControl,
 } from "../types/common";
 import { GameLogicContext } from "../context/gameLogicContext";
 import useCollision from "../hooks/useCollision";
@@ -40,12 +40,6 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
     type: TypeOfObjects.apple,
   });
 
-  const collisionWall = useCollision({
-    objectA: snake,
-    objectB: apples,
-    type: TypeOfObjects.wall,
-  });
-
   const [wall] = useState<Wall>({
     name: "wall",
     type: TypeOfObjects.wall,
@@ -68,28 +62,36 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
       },
     ],
   });
+  const collisionWall = useCollision({
+    objectA: snake,
+    objectB: wall,
+    type: TypeOfObjects.wall,
+  });
   useEffect(() => {
     if (!collisionWall) return;
   }, [collisionWall]);
 
   useEffect(() => {
     if (!collisionApple) return;
-    setApples((prev) => prev.filter((apple) => apple.name !== "apple"));
+    setApples((prev) =>
+      prev.filter((apple) => apple.name !== collisionApple.collide)
+    );
     setEatenApples((prev) => prev++);
+    console.log("apples:", apples);
   }, [collisionApple]);
 
   const [direction, setDirection] = useState<DirectionType | null>(null);
-  const [snakeAnimation, setSnakeAnimation] =
-    useState<AnimationStatus>("STOPPED");
+  const [gameAnimation, setGameAnimation] =
+    useState<AnimationControl[keyof AnimationControl]>("STOPPED");
 
-  const stopSnake = useCallback(() => {
-    setSnakeAnimation("STOPPED");
+  const stop = useCallback(() => {
+    setGameAnimation("STOPPED");
   }, []);
-  const pauseSnake = useCallback(() => {
-    setSnakeAnimation("PAUSED");
+  const pause = useCallback(() => {
+    setGameAnimation("PAUSED");
   }, []);
-  const startSnake = useCallback(() => {
-    setSnakeAnimation("RUNNING");
+  const start = useCallback(() => {
+    setGameAnimation("RUNNING");
   }, []);
   return (
     <GameLogicContext.Provider
@@ -103,10 +105,10 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
         direction: direction,
         setDirection,
         isWallCollided: collisionWall,
-        snakeAnimation: snakeAnimation,
-        snakeAnimationControl: {
-          startSnake,
-          pauseSnake,
+        gameAnimation: gameAnimation,
+        gameAnimationControl: {
+          start,
+          pause,
           stop,
         },
       }}>
