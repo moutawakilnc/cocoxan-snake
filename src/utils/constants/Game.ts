@@ -35,3 +35,10 @@ export enum MOUVEMENT_KEY {
   left = "ArrowLeft",
   right = "ArrowRight",
 }
+
+export enum DIRECTION_ZONE {
+  TOP,
+  LEFT,
+  RIGHT,
+  BOTTOM,
+}

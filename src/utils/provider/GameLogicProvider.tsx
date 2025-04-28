@@ -16,9 +16,9 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
     name: "player_snake",
     type: TypeOfObjects.snake,
     element: [
-      { x: 0, y: 0, z: 0 },
-      { x: -2, y: 0, z: 0 },
-      { x: -4, y: 0, z: 0 },
+      { x: 0, y: 0, z: 0, parent: TypeOfObjects.snake },
+      { x: -2, y: 0, z: 0, parent: TypeOfObjects.snake },
+      { x: -4, y: 0, z: 0, parent: TypeOfObjects.snake },
     ],
   });
   const [apples, setApples] = useState<TApple[]>([
@@ -29,6 +29,7 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
         x: 3,
         y: 3,
         z: 0,
+        parent: TypeOfObjects.apple,
       },
     },
   ]);
@@ -47,18 +48,22 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
       {
         x: { start: MAP_BORDERS.x.start, end: MAP_BORDERS.x.end },
         y: { start: MAP_BORDERS.y.start, end: MAP_BORDERS.y.start + 1 },
+        parent: TypeOfObjects.wall,
       },
       {
         x: { start: MAP_BORDERS.x.start, end: MAP_BORDERS.x.start + 1 },
         y: { start: MAP_BORDERS.y.start, end: MAP_BORDERS.y.end },
+        parent: TypeOfObjects.wall,
       },
       {
         x: { start: MAP_BORDERS.x.start, end: MAP_BORDERS.x.end },
         y: { start: MAP_BORDERS.y.end - 1, end: MAP_BORDERS.y.end },
+        parent: TypeOfObjects.wall,
       },
       {
         x: { start: MAP_BORDERS.x.end - 1, end: MAP_BORDERS.x.end },
         y: { start: MAP_BORDERS.y.start, end: MAP_BORDERS.y.end },
+        parent: TypeOfObjects.wall,
       },
     ],
   });
@@ -67,15 +72,10 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
     objectB: wall,
     type: TypeOfObjects.wall,
   });
-  useEffect(() => {
-    if (!collisionWall) return;
-  }, [collisionWall]);
 
   useEffect(() => {
-    if (!collisionApple) return;
-    setApples((prev) =>
-      prev.filter((apple) => apple.name !== collisionApple.collide)
-    );
+    if (!collisionWall) return;
+
     setEatenApples((prev) => prev++);
     console.log("apples:", apples);
   }, [collisionApple]);
@@ -104,7 +104,7 @@ const GameLogicProvider: React.FC<ProviderProps> = ({ children }) => {
         setEatenApples,
         direction: direction,
         setDirection,
-        isWallCollided: collisionWall,
+        collision: collisionWall.collide || collisionApple.collide,
         gameAnimation: gameAnimation,
         gameAnimationControl: {
           start,

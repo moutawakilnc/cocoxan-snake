@@ -1,6 +1,11 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ReactNode } from "react";
-import { MOUVEMENT_KEY, TypeOfObjects } from "../constants/Game";
+import {
+  DIRECTION_ZONE,
+  MOUVEMENT_KEY,
+  TypeOfObjects,
+} from "../constants/Game";
+import { ObjectOfGame } from "./componentProps";
 
 export type ButtonType = "native" | "flex";
 
@@ -24,8 +29,10 @@ export type Position<T = number> = {
 };
 
 export type ObjPosition<T = number> = Position<T> & {
+  id?: number;
   name?: string;
   ref?: any;
+  parent: TypeOfObjects;
 };
 //[]
 
@@ -69,7 +76,7 @@ export interface IGameLogicContext {
   setApples: any;
   eatenApples: number;
   setEatenApples: any;
-  isWallCollided: CollisionType<string | boolean>;
+  collision: CollisionType<false | ObjPosition<Distance>>["collide"];
   gameAnimation: AnimationControl[keyof AnimationControl];
   gameAnimationControl: { [a in keyof AnimationControl]: EmptyParamVoidReturn };
 }
@@ -92,7 +99,8 @@ export interface UseHooksUpdateState<T> {
 }
 
 export type CollisionType<T> = {
-  collide: boolean | T;
+  collide: false | T | null;
+  positionOfCollision?: DIRECTION_ZONE | number;
 };
 
 export type Wall = NamedElementInSpace<Distance, []>;
