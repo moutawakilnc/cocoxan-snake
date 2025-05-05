@@ -1,83 +1,63 @@
 import { useContext, useEffect, useRef } from "react";
-import { DirectionType, Snake } from "../types/common";
+import { DirectionType, Position, Snake } from "../types/common";
 import { GameLogicContext } from "../context/gameLogicContext";
 import {
-  DIRECTION_MOVE,
-  MOUVEMENT_KEY,
-  TypeOfObjects,
+	DIRECTION_ZONE,
+	MAP_BORDERS,
+	MOUVEMENT_KEY,
+	TypeOfObjects,
 } from "../constants/Game";
+import { mapMovKeyToPos } from "./helper";
 
 const useSnakeMouvement = () => {
-  const { snake, setSnake, direction, collision } =
-    useContext(GameLogicContext);
+	const { snake, setSnake, direction } = useContext(GameLogicContext);
+	console.log("1st", direction);
+	const moveSnake = (radicalMove?: Partial<Position>) => {
+		direction?.coordinates &&
+			setSnake((prev: Snake) => {
+				let newHeadPos = prev.element[0];
+				newHeadPos = {
+					...prev.element[0],
+					x: radicalMove?.x ?? prev.element[0].x + direction!.coordinates.x,
+					y: radicalMove?.y ?? prev.element[0].y + direction!.coordinates.y,
+					z: 0,
+				};
 
-  const moveSnake = () => {
-    setSnake((prev: Snake) => {
-      let newHeadPos = snake.element[0];
-      switch (direction?.type) {
-        case MOUVEMENT_KEY.up:
-          newHeadPos = {
-            ...snake.element[0],
-            x: snake.element[0].x,
-            y: snake.element[0].y + DIRECTION_MOVE.y,
-            z: 0,
-          };
-          break;
-        case MOUVEMENT_KEY.down:
-          newHeadPos = {
-            ...snake.element[0],
-            x: snake.element[0].x,
-            y: snake.element[0].y - DIRECTION_MOVE.y,
-            z: 0,
-          };
-          break;
-        case MOUVEMENT_KEY.left:
-          newHeadPos = {
-            ...snake.element[0],
-            x: snake.element[0].x - DIRECTION_MOVE.x,
-            y: snake.element[0].y,
-            z: 0,
-          };
-          break;
-        case MOUVEMENT_KEY.right:
-          newHeadPos = {
-            ...snake.element[0],
-            x: snake.element[0].x + DIRECTION_MOVE.x,
-            y: snake.element[0].y,
-            z: 0,
-          };
-          break;
-      }
+				return {
+					...prev,
+					element: [newHeadPos, ...prev.element.slice(0, -1)],
+				};
+			});
+	};
 
-      return {
-        ...prev,
-        element: [newHeadPos, ...prev.element.slice(0, -1)],
-      };
-    });
-  };
+	useEffect(() => {
+		setTimeout(moveSnake, 130);
+	}, [direction, snake?.element]);
 
-  useEffect(() => {
-    if (!snake.element.length) return;
-
-    setTimeout(moveSnake, 130);
-  }, [direction, snake.element]);
-
-  useEffect(() => {
-    if (!snake.element.length) return;
-
-    if (!!collision) {
-      switch (collision.parent) {
-        case TypeOfObjects.wall:
-          break;
-        case TypeOfObjects.apple:
-          break;
-        case TypeOfObjects.snake:
-          break;
-        default:
-          break;
-      }
-    }
-  }, [direction, snake.element]);
+	useEffect(() => {
+		if (!snake?.element.length) return;
+		/*
+		if (collision && collision.collide) {
+			if (TypeOfObjects.wall == collision.collide.parent) {
+				switch (collision.positionOfCollision) {
+					case DIRECTION_ZONE.TOP:
+						moveSnake({ y: MAP_BORDERS.y.start });
+						break;
+					case DIRECTION_ZONE.BOTTOM:
+						moveSnake({ y: MAP_BORDERS.y.end });
+						break;
+					case DIRECTION_ZONE.LEFT:
+						moveSnake({ x: MAP_BORDERS.x.end });
+						break;
+					case DIRECTION_ZONE.RIGHT:
+						moveSnake({ x: MAP_BORDERS.x.start });
+						break;
+				}
+			} else if (TypeOfObjects.apple == collision.collide.parent) {
+			} else if (TypeOfObjects.snake == collision.collide.parent) {
+			}
+		}*/
+	}, [direction, snake]);
 };
 
 export default useSnakeMouvement;
