@@ -10,7 +10,7 @@ import {
 import { mapMovKeyToPos } from "./helper";
 
 const useSnakeMouvement = () => {
-	const { snake, setSnake, direction } = useContext(GameLogicContext);
+	const { snake, setSnake, direction,collision } = useContext(GameLogicContext);
 	console.log("1st", direction);
 	const moveSnake = (radicalMove?: Partial<Position>) => {
 		direction?.coordinates &&
@@ -36,6 +36,7 @@ const useSnakeMouvement = () => {
 
 	useEffect(() => {
 		if (!snake?.element.length) return;
+		if(collision)
 		/*
 		if (collision && collision.collide) {
 			if (TypeOfObjects.wall == collision.collide.parent) {
