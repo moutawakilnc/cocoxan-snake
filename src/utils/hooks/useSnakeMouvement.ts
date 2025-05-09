@@ -1,13 +1,6 @@
-import { useContext, useEffect, useRef } from "react";
-import { DirectionType, Position, Snake } from "../types/common";
+import { useContext, useEffect } from "react";
+import { Position, Snake } from "../types/common";
 import { GameLogicContext } from "../context/gameLogicContext";
-import {
-	DIRECTION_ZONE,
-	MAP_BORDERS,
-	MOUVEMENT_KEY,
-	TypeOfObjects,
-} from "../constants/Game";
-import { mapMovKeyToPos } from "./helper";
 
 const useSnakeMouvement = () => {
 	const { snake, setSnake, direction } = useContext(GameLogicContext);

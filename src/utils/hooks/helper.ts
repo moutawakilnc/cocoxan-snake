@@ -1,5 +1,7 @@
 import {
 	APPLE_SIZE,
+	DIRECTION_ZONE,
+	MAP_BORDERS,
 	MOUVEMENT_DIRECTION,
 	MOUVEMENT_KEY,
 	SNAKE_SIZE,
@@ -52,3 +54,26 @@ export const mapEventToDirection: (dir: string) => MOUVEMENT_KEY = (
 };
 
 export const mapMovKeyToPos = (dir: MOUVEMENT_KEY) => MOUVEMENT_DIRECTION[dir];
+
+export const getWallPosition: (_: ObjPosition<Distance>) => DIRECTION_ZONE = (
+	wall: ObjPosition<Distance>
+) => {
+	if (
+		wall.x.start === MAP_BORDERS.x.start &&
+		wall.x.end === MAP_BORDERS.x.end
+	) {
+		if (
+			wall.y.start === MAP_BORDERS.y.start &&
+			wall.y.end === MAP_BORDERS.y.start + 1
+		)
+			return DIRECTION_ZONE.TOP;
+		else return DIRECTION_ZONE.BOTTOM;
+	} else {
+		if (
+			wall.y.start === MAP_BORDERS.y.start &&
+			wall.y.end === MAP_BORDERS.y.end
+		)
+			return DIRECTION_ZONE.LEFT;
+		else return DIRECTION_ZONE.RIGHT;
+	}
+};

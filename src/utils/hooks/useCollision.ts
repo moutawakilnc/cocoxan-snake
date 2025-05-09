@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { IUseCollisionManagerProps } from "../types/componentProps";
+import {
+	IUseCollisionManagerProps,
+	ObjectOfGame,
+} from "../types/componentProps";
 import { CollisionType, Distance, ObjPosition } from "../types/common";
-import { DIRECTION_ZONE, TypeOfObjects } from "../constants/Game";
+import { TypeOfObjects } from "../constants/Game";
 import { checkCollision } from "./collisionService";
-import { castNumberObjectToDistance } from "./helper";
+import { castNumberObjectToDistance, getWallPosition } from "./helper";
 
 const useCollisionManager = ({
 	objectA,
@@ -17,35 +20,34 @@ const useCollisionManager = ({
 	});
 	useEffect(() => {
 		if (!Array.isArray(objectA)) {
-			let head: any = objectA.element;
-			head = castNumberObjectToDistance(
-				head as ObjPosition<number>,
+			let head: ObjPosition<Distance> = castNumberObjectToDistance(
+				objectA.element as ObjPosition<number>,
 				TypeOfObjects.snake
-			) as ObjPosition<Distance>;
+			);
 			if (type === TypeOfObjects.wall) {
 				let wallFragmentCollided: ObjPosition<Distance> | undefined;
-				if (!Array.isArray(objectB)) {
-					let nameOfObject: ObjPosition<Distance>;
 
-					const wallFragments = objectB.element as ObjPosition<Distance>[]; //for sure ;) , or not? :'(
-					const isWallColided = wallFragments.some((wallFragment) => {
-						nameOfObject = wallFragment!;
-						wallFragmentCollided = wallFragment;
-						return checkCollision({
-							objectA: head,
-							objectB: wallFragment,
-						});
+				const wallFragments = (objectB as ObjectOfGame)
+					.element as ObjPosition<Distance>[]; //for sure ;) , or not? :'(
+				const isWallColided = wallFragments.some((wallFragment) => {
+					wallFragmentCollided = wallFragment;
+					return checkCollision({
+						objectA: head,
+						objectB: wallFragment,
 					});
+				});
+				if (isWallColided)
 					setValue({
-						collide: isWallColided ? wallFragmentCollided! : false,
-						positionOfCollision: DIRECTION_ZONE.TOP,
+						collide: wallFragmentCollided!,
+						positionOfCollision: getWallPosition(wallFragmentCollided!),
 					});
-				} else {
-					console.error("Wall shouldn't be an array!");
-				}
-			} else if (type === TypeOfObjects.apple) {
-				if (Array.isArray(objectB)) {
-					/*const apples = objectB as NamedElementInSpace[];
+				else
+					setValue({
+						collide: false,
+					});
+			}
+		} else if (type === TypeOfObjects.apple) {
+			/*const apples = objectB as NamedElementInSpace[];
 
           const isAppleCollision = apples.some((apple) => {
             let appleObject: NamedElementInSpace<Distance> = {
@@ -67,10 +69,6 @@ const useCollisionManager = ({
           } else {
             setValue({ collide: false });
           }*/
-				} else {
-					console.error("Object apple, should be an array");
-				}
-			}
 		}
 	}, []);
 
