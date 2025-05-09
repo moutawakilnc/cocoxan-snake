@@ -41,7 +41,7 @@ export interface UseCollisionProps {
 export interface UseSnakeProps extends UseCollisionProps {}
 
 export interface IUseCollisionManagerProps {
-  objectA: ObjectOfGame | ObjectOfGame[];
+  objectA: ObjPosition<number | Distance>;
   objectB: ObjectOfGame | ObjectOfGame[];
   type: TypeOfObjects;
 }
