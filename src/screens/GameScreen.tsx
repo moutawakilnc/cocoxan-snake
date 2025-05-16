@@ -45,11 +45,14 @@ const SnakeGame = () => {
 			//ici j'ai la direction eventCaster, c'un objet du type
 			//MOVEMENT_KEY, qui est une enum qui indique le type du mouvement a faire
 			let coordinates = prev?.coordinates;
+			console.log("test", MOUVEMENT_DIRECTION[eventCasted]);
 			if (
-				(eventCasted === MOUVEMENT_KEY.arrowUp && prev.coordinates.y === 0) ||
-				(eventCasted === MOUVEMENT_KEY.arrowDown && prev.coordinates.y === 0) ||
-				(eventCasted === MOUVEMENT_KEY.arrowLeft && prev.coordinates.x === 0) ||
-				(eventCasted === MOUVEMENT_KEY.arrowRight && prev.coordinates.x === 0)
+				(eventCasted === MOUVEMENT_KEY.arrowUp && prev?.coordinates.y === 0) ||
+				(eventCasted === MOUVEMENT_KEY.arrowDown &&
+					prev?.coordinates.y === 0) ||
+				(eventCasted === MOUVEMENT_KEY.arrowLeft &&
+					prev?.coordinates.x === 0) ||
+				(eventCasted === MOUVEMENT_KEY.arrowRight && prev?.coordinates.x === 0)
 			) {
 				//ici je recupere les coordonées du movement a faire, en accedant, a
 				//un objet MOUVEMENT_DIRECTION et a la propriété équivalente au
@@ -58,6 +61,7 @@ const SnakeGame = () => {
 			} else {
 				coordinates = MOUVEMENT_DIRECTION["none"];
 			}
+			console.log("coordinates:", coordinates);
 			//ici un objet du genre: MOUVEMENT_KEY(up , down...(lenum genre))
 			//et coordinates, cad le mouvement a appliquer
 			return { type: eventCasted, coordinates };

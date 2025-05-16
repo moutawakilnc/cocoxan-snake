@@ -21,7 +21,7 @@ const useCollisionManager = ({
 	useEffect(() => {
 		if (!Array.isArray(objectA)) {
 			let head: ObjPosition<Distance> = castNumberObjectToDistance(
-				objectA.element as ObjPosition<number>,
+				objectA as ObjPosition<number>,
 				TypeOfObjects.snake
 			);
 			if (type === TypeOfObjects.wall) {

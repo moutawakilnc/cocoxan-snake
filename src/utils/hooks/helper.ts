@@ -4,6 +4,7 @@ import {
 	MAP_BORDERS,
 	MOUVEMENT_DIRECTION,
 	MOUVEMENT_KEY,
+	MOVEMENT_KEY_to_DIR,
 	SNAKE_SIZE,
 	TypeOfObjects,
 } from "../constants/Game";
@@ -53,7 +54,7 @@ export const mapEventToDirection: (dir: string) => MOUVEMENT_KEY = (
 	}
 };
 
-export const mapMovKeyToPos = (dir: MOUVEMENT_KEY) => MOUVEMENT_DIRECTION[dir];
+export const mapMovKeyToPos = (dir: MOUVEMENT_KEY) => MOVEMENT_KEY_to_DIR[dir];
 
 export const getWallPosition: (_: ObjPosition<Distance>) => DIRECTION_ZONE = (
 	wall: ObjPosition<Distance>
